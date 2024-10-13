@@ -1,0 +1,18 @@
+{
+  "messages": [
+    {
+      "id": "msg123",
+      "content": "Team meeting at 3 PM today 🙂",
+      "priority": "high",
+      "timestamp": "2024-09-30T15:00:00Z",
+      "read": false
+    },
+    {
+      "id": "msg124",
+      "content": "Don't forget to submit your reports.",
+      "priority": "medium",
+      "timestamp": "2024-09-29T12:00:00Z",
+      "read": false
+    }
+  ]
+}
