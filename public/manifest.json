@@ -4,19 +4,14 @@
   "version": "1.0.0",
   "description": "Displays organization-wide messages from an admin to users.",
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
+    "default_popup": "src/pages/Popup/index.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "permissions": ["storage", "alarms", "notifications"],
   "options_ui": {
-    "page": "options.html",
-    "open_in_tab": false
+    "page": "src/pages/Options/index.html",
+    "open_in_tab": true
   }
 }
