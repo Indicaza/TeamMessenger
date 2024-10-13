@@ -2,16 +2,12 @@
   "manifest_version": 3,
   "name": "TeamMessenger",
   "version": "1.0.0",
-  "description": "Displays organization-wide messages from an admin to users.",
+  "description": "Basic setup for TeamMessenger Chrome extension.",
   "action": {
-    "default_popup": "src/pages/Popup/index.html"
+    "default_popup": "index.html"
   },
+  "permissions": ["storage"],
   "background": {
     "service_worker": "src/background.js"
-  },
-  "permissions": ["storage", "alarms", "notifications"],
-  "options_ui": {
-    "page": "src/pages/Options/index.html",
-    "open_in_tab": true
   }
 }

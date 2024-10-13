@@ -7,9 +7,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: "src/main.jsx",
-        background: "src/background.js",
-        popup: "src/pages/Popup/index.html",
-        options: "src/pages/Options/index.html",
       },
       output: {
         entryFileNames: "src/[name].js",

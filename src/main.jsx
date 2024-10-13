@@ -1,10 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
+import ReactDOM from "react-dom";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+function App() {
+  return <div>TeamMessenger Chrome Extension</div>;
+}
+
+ReactDOM.render(<App />, document.getElementById("app"));
