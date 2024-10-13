@@ -1,11 +1,13 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,deps:node:.
+# This config was automatically generated from your source code.
+# Stacks detected for this pipeline: cicd:github-actions:.github/workflows, deps:node.
 version: 2.1
+
 orbs:
   node: circleci/node@5
+
 jobs:
   build-node:
-    # Build node project
+    # Build node project with CircleCI
     executor: node/default
     steps:
       - checkout
@@ -23,19 +25,25 @@ jobs:
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
+
   deploy:
-    # This is an example deploy job, not actually used by the workflow
+    # Deployment job to run only on the prod branch
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
+      # Replace this with your deploy commands
       - run:
           name: deploy
-          command: "#e.g. ./deploy.sh"
-      - run:
-          name: found github actions config
-          command: ":"
+          command: "./deploy.sh" # Replace with actual deploy commands
+
 workflows:
-  build:
+  version: 2
+  build_and_deploy:
     jobs:
       - build-node
+      - deploy:
+          requires:
+            - build-node
+          filters:
+            branches:
+              only: prod # Ensures deploy only runs on prod branch
