@@ -16,21 +16,20 @@ const ChatList = () => {
         const newMessage = messagesData.messages[randomIndex];
 
         if (!messages.some((msg) => msg.id === newMessage.id)) {
-          setMessages([...messages, newMessage]);
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       }
-    }, 3000); // Every 3 seconds for more fluid interaction
+    }, 1000); // Every 2 seconds for more fluid interaction
 
     return () => clearInterval(interval);
   }, [messages]);
 
-  // Sort messages by priority
+  // Sort messages by priority to keep red (high priority) at the top
   useEffect(() => {
     const sorted = [...messages].sort((a, b) => {
       const priorityOrder = { high: 1, medium: 2, low: 3 };
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
-
     setSortedMessages(sorted);
   }, [messages]);
 

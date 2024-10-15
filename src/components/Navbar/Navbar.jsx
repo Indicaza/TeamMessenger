@@ -1,7 +1,7 @@
-// src/components/Navbar/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styles from "./Navbar.module.css";
+import Logo from "../../assets/SVG/Logo.svg"; // Adjusted import for Logo
 
 const Navbar = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth0();
@@ -33,7 +33,8 @@ const Navbar = () => {
     <header className={styles.navbar}>
       <div className={styles.navbarContainer}>
         <div className={styles.navbarLeft}>
-          <h1 className={styles.navbarTitle}>TeamMessenger</h1>
+          {/* Replacing the title with the Logo */}
+          <img src={Logo} alt="TeamMessenger Logo" className={styles.logo} />
         </div>
 
         <div className={styles.navbarRight}>

@@ -11,7 +11,7 @@
   z-index: 20;
   background: rgba(0, 0, 0, 0.5); /* Smoked glass effect */
   backdrop-filter: blur(10px); /* Apply glassmorphism */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .navbarContainer {
@@ -47,23 +47,26 @@
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
-  border: 1px solid #cccccc;
+  /* border: 1px solid #cccccc; */
   transition: all 0.3s;
+  box-shadow: 3px 3px 3px rgba(1, 1, 1, 0.95);
 }
 
 .userAvatar:hover {
   transform: scale(1.1);
+  display: pointer;
 }
 
 .dropdownMenu {
   position: absolute;
   top: 60px;
   right: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5); /* Smoked glass effect */
+  backdrop-filter: blur(10px); /* Apply glassmorphism */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   padding: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   z-index: 30;
 }
 
@@ -76,4 +79,15 @@
 
 .dropdownItem:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.logo {
+  width: 100px; /* Adjust the size to your needs */
+  height: auto; /* Maintain aspect ratio */
+  cursor: pointer; /* Optional: make it clickable */
+  transition: transform 0.3s ease; /* Smooth transition on hover */
+}
+
+.logo:hover {
+  transform: scale(1.1); /* Slight zoom on hover */
 }
