@@ -7,6 +7,12 @@
     "default_popup": "index.html"
   },
   "permissions": ["storage"],
+  "icons": {
+    "16": "assets/icons/favicon-16x16.png",
+    "32": "assets/icons/favicon-32x32.png",
+    "48": "assets/icons/android-chrome-192x192.png",
+    "128": "assets/icons/android-chrome-512x512.png"
+  },
   "background": {
     "service_worker": "src/background.js"
   }

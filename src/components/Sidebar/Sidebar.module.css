@@ -3,9 +3,9 @@
 .sidebar {
   position: fixed;
   top: 80px;
-  left: -345px; /* Start off-screen */
-  width: 300px;
-  height: 90vh;
+  left: -400px; /* Start off-screen */
+  width: 350px;
+  height: 88vh;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
   padding: 20px;
@@ -15,7 +15,30 @@
   z-index: 15;
   overflow-y: auto;
   border-radius: 8px;
-  transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transition: left 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.5);
+
+  /* Inner shadow effect */
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.6), inset 4px 0 8px rgba(0, 0, 0, 0.6),
+    inset -4px 0 8px rgba(0, 0, 0, 0.6);
+
+  /* Smoke animation */
+  animation: smokyBackground 30s ease-in-out infinite;
+}
+
+@keyframes smokyBackground {
+  0% {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+  }
+  50% {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+  }
+  100% {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+  }
 }
 
 .sidebar.open {
