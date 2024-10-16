@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import styles from "./ChatList.module.css";
 import messagesData from "../../assets/messages.json";
 
-const ChatList = () => {
+const ChatList = ({ onSelectChat }) => {
   const [messages, setMessages] = useState([]);
   const [sortedMessages, setSortedMessages] = useState([]);
+  const [clickedMessages, setClickedMessages] = useState([]);
 
-  // Simulate receiving messages one at a time
   useEffect(() => {
     const interval = setInterval(() => {
       if (messages.length < messagesData.messages.length) {
@@ -19,12 +19,11 @@ const ChatList = () => {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       }
-    }, 1000); // Every 2 seconds for more fluid interaction
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [messages]);
 
-  // Sort messages by priority to keep red (high priority) at the top
   useEffect(() => {
     const sorted = [...messages].sort((a, b) => {
       const priorityOrder = { high: 1, medium: 2, low: 3 };
@@ -33,23 +32,35 @@ const ChatList = () => {
     setSortedMessages(sorted);
   }, [messages]);
 
+  const handleSelectMessage = (msg) => {
+    setClickedMessages((prevClicked) => [...prevClicked, msg.id]);
+    onSelectChat(msg);
+  };
+
   return (
     <ul className={styles.messageList}>
       {sortedMessages.map((msg) => (
         <li
           key={msg.id}
-          className={styles.messageItem}
-          style={{ "--random-delay": Math.random() }} // Set a random delay for each message
+          className={`${styles.messageItem} ${
+            clickedMessages.includes(msg.id) ? styles.clicked : ""
+          }`}
+          onClick={() => handleSelectMessage(msg)}
         >
           <div className={styles.profileContainer}>
-            <div className={`${styles.neonGlow} ${styles[msg.priority]}`} />
+            {!clickedMessages.includes(msg.id) && (
+              <>
+                <div className={`${styles.neonGlow} ${styles[msg.priority]}`} />
+                <div
+                  className={`${styles.statusOrb} ${styles[msg.priority]}`}
+                />
+              </>
+            )}
             <img
               src={`https://picsum.photos/seed/${msg.id}/50`}
               alt={msg.name}
               className={styles.profilePic}
             />
-            {/* Status orb */}
-            <div className={`${styles.statusOrb} ${styles[msg.priority]}`} />
           </div>
           <div className={styles.messageContent}>
             <div className={styles.messageHeader}>

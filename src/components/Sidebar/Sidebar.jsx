@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styles from "./Sidebar.module.css";
 import ChatList from "./ChatList";
 
-const Sidebar = () => {
+const Sidebar = ({ onSelectChat }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -31,8 +31,7 @@ const Sidebar = () => {
             </span>
           </button>
         </div>
-        {/* Render ChatList component */}
-        <ChatList />
+        <ChatList onSelectChat={onSelectChat} />
       </div>
     </>
   );
