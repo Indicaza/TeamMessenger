@@ -10,39 +10,74 @@
 .messageItem {
   display: flex;
   align-items: center;
-  padding: 15px;
-  margin-bottom: 15px;
-
+  padding: 10px; /* Adjust padding for smaller devices */
+  margin-bottom: 10px; /* Reduce margins for responsiveness */
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 5px 5px 15px rgba(0, 0, 0, 0.7),
-    0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 8px rgba(10, 10, 0, 0.4); /* Reduced shadow size */
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(8px) saturate(120%);
   position: relative;
   transition: all 0.5s ease;
-
-  /* Apply the pop-in animation */
   animation: popIn 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-/* Define the keyframes for the pop-in animation */
-@keyframes popIn {
-  0% {
-    transform: scale(0); /* Start super small */
-    opacity: 0;
+@media (max-width: 768px) {
+  .messageItem {
+    padding: 8px;
+    margin-bottom: 8px;
   }
-  70% {
-    transform: scale(1.1); /* Slightly overshoot size */
-    opacity: 1;
+
+  .profilePic {
+    width: 40px;
+    height: 40px; /* Smaller profile pics */
   }
-  100% {
-    transform: scale(1); /* Settle down to normal size */
+
+  .messageDetails {
+    font-size: 12px;
+  }
+
+  .messageHeader {
+    font-size: 14px;
+  }
+
+  .date {
+    font-size: 10px;
+  }
+
+  .statusOrb {
+    width: 10px;
+    height: 10px; /* Smaller status orb */
   }
 }
 
-.messageItem:hover {
-  transform: scale(1.05); /* Slight grow on hover */
+@media (max-width: 480px) {
+  .messageItem {
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+
+  .profilePic {
+    width: 30px;
+    height: 30px; /* Further reduced for mobile */
+  }
+
+  .messageHeader {
+    font-size: 12px;
+  }
+
+  .messageDetails {
+    font-size: 10px;
+  }
+
+  .date {
+    font-size: 8px;
+  }
+
+  .statusOrb {
+    width: 8px;
+    height: 8px; /* Even smaller for mobile */
+  }
 }
 
 .profileContainer {
@@ -64,35 +99,25 @@
   height: 50px;
   border-radius: 50%;
   opacity: 0.8;
-  z-index: -1; /* Ensure it stays behind the image */
+  z-index: -1;
   animation: pulse 3s infinite ease-in-out;
 }
 
 .high {
   box-shadow: 0 0 30px rgba(255, 0, 0, 0.85);
   animation: pulse 3s infinite ease-in-out;
-  animation-delay: calc(
-    0.3s * var(--random-delay)
-  ); /* Add a randomized delay */
 }
 
 .medium {
   box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
   animation: pulse 3.5s infinite ease-in-out;
-  animation-delay: calc(
-    0.5s * var(--random-delay)
-  ); /* Add a randomized delay */
 }
 
 .low {
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.75);
   animation: pulse 4s infinite ease-in-out;
-  animation-delay: calc(
-    0.5s * var(--random-delay)
-  ); /* Add a randomized delay */
 }
 
-/* Orb positioned relative to the card */
 .statusOrb {
   position: absolute;
   top: -5px;
@@ -100,19 +125,19 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background-color: rgba(255, 0, 0, 0.75); /* Red default */
+  background-color: rgba(255, 0, 0, 0.75);
 }
 
 .statusOrb.high {
-  background-color: rgba(255, 0, 0, 0.75); /* Red for high priority */
+  background-color: rgba(255, 0, 0, 0.75);
 }
 
 .statusOrb.medium {
-  background-color: rgba(255, 255, 0, 0.75); /* Yellow for medium priority */
+  background-color: rgba(255, 255, 0, 0.75);
 }
 
 .statusOrb.low {
-  background-color: rgba(0, 255, 0, 0.75); /* Green for low priority */
+  background-color: rgba(0, 255, 0, 0.75);
 }
 
 @keyframes pulse {
@@ -156,44 +181,7 @@
 }
 
 .clicked {
-  border: 2px solid #0084ff;
-  transform: scale(1.05);
-  box-shadow: 0px 0px 15px rgba(0, 132, 255, 0.7); /* Glow for active message */
-}
-
-.messageItem {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px) saturate(150%);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 5px 5px 15px rgba(0, 0, 0, 0.7),
-    0 4px 12px rgba(0, 0, 0, 0.5);
-  position: relative;
-  transition: all 0.5s ease;
-}
-
-.neonGlow {
-  position: absolute;
-  top: 17%;
-  left: 4%;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  opacity: 0.8;
-  z-index: -1;
-  animation: pulse 3s infinite ease-in-out;
-}
-
-.statusOrb {
-  position: absolute;
-  top: -5px;
-  right: -6px;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: rgba(255, 0, 0, 0.75);
+  /* border: 1px solid #0084ff; */
+  transform: scale(0.95);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.7);
 }

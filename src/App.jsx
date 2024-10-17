@@ -1,25 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 
 function App() {
-  const { isAuthenticated } = useAuth0();
   const [selectedChat, setSelectedChat] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
 
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
   };
 
+  useEffect(() => {
+    // Mock auth check for now, if you're removing Auth0
+    setIsAuthenticated(true);
+  }, []);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserProfile(null);
+  };
+
+  if (!isAuthenticated) {
+    return <div>Redirecting to login...</div>;
+  }
+
   return (
     <Router>
-      <div className="relative h-screen flex">
+      <div className="h-screen w-screen flex">
         <Sidebar onSelectChat={handleSelectChat} />
         <div className="flex-1 flex flex-col">
-          <Navbar />
-          <div className="flex justify-center items-center h-full">
+          <Navbar onLogout={handleLogout} userProfile={userProfile} />
+          <div className="flex justify-center items-center flex-1">
             <ChatWindow selectedChat={selectedChat} />
           </div>
         </div>

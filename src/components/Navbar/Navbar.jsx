@@ -1,10 +1,10 @@
+// src/components/Navbar/Navbar.jsx
+
 import React, { useState, useEffect, useRef } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import styles from "./Navbar.module.css";
 import Logo from "../../assets/SVG/Logo.svg"; // Adjusted import for Logo
 
-const Navbar = () => {
-  const { user, logout, isAuthenticated, isLoading } = useAuth0();
+const Navbar = ({ onLogout, userProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null); // Ref for the dropdown
 
@@ -25,8 +25,8 @@ const Navbar = () => {
     };
   }, []);
 
-  if (isLoading) {
-    return null; // Don't render anything while loading
+  if (!userProfile) {
+    userProfile = { name: "Test User", picture: "/path/to/default-avatar.png" }; // Mock user profile
   }
 
   return (
@@ -38,32 +38,25 @@ const Navbar = () => {
         </div>
 
         <div className={styles.navbarRight}>
-          {isAuthenticated && user && (
-            <div ref={dropdownRef} className="relative">
-              {/* User's avatar */}
-              <img
-                src={user.picture}
-                alt={user.name}
-                className={styles.userAvatar}
-                onClick={handleToggle}
-              />
-              {isOpen && (
-                <div className={styles.dropdownMenu}>
-                  <ul>
-                    <li className={styles.dropdownItem}>Settings</li>
-                    <li
-                      className={styles.dropdownItem}
-                      onClick={() =>
-                        logout({ returnTo: window.location.origin })
-                      }
-                    >
-                      Logout
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
+          <div ref={dropdownRef} className={styles.userMenu}>
+            {/* User's avatar */}
+            <img
+              src={userProfile.picture}
+              alt={userProfile.name}
+              className={styles.userAvatar}
+              onClick={handleToggle}
+            />
+            {isOpen && (
+              <div className={styles.dropdownMenu}>
+                <ul>
+                  <li className={styles.dropdownItem}>Settings</li>
+                  <li className={styles.dropdownItem} onClick={onLogout}>
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

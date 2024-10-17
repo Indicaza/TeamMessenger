@@ -1,14 +1,35 @@
-// src/components/Sidebar/Sidebar.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Sidebar.module.css";
 import ChatList from "./ChatList";
 
 const Sidebar = ({ onSelectChat }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const sidebarRef = useRef(null);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  // Close the sidebar if user clicks outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add event listener for clicks
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup event listener on unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -21,7 +42,10 @@ const Sidebar = ({ onSelectChat }) => {
         </div>
       )}
 
-      <div className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+      <div
+        ref={sidebarRef}
+        className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}
+      >
         <div className={styles.sidebarTitle}>
           <span>Messages</span>
           <button onClick={toggleSidebar} className={styles.closeButton}>

@@ -12,8 +12,20 @@ export default defineConfig({
           dest: "assets/icons",
         },
         {
-          src: "src/background.js", // Copy the background.js file
-          dest: "src", // Ensure it goes to the src folder inside dist
+          src: "public/manifest.json",
+          dest: "",
+        },
+        {
+          src: "public/popup.html",
+          dest: "",
+        },
+        {
+          src: "public/popup-style.css", // Renamed public CSS file
+          dest: "",
+        },
+        {
+          src: "src/background.js",
+          dest: "",
         },
       ],
     }),
@@ -21,10 +33,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: "src/main.jsx",
+        main: "./src/main.jsx",
       },
       output: {
-        entryFileNames: "src/[name].js",
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name].js",
+        assetFileNames: "[name][extname]",
       },
     },
   },
