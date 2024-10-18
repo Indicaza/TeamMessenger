@@ -12,6 +12,9 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Ensure permissions for deploy.sh
+          command: chmod +x ./deploy.sh
+      - run:
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
@@ -31,6 +34,9 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
+      - run:
+          name: Ensure permissions for deploy.sh
+          command: chmod +x ./deploy.sh
       - run:
           name: deploy
           command: bash ./deploy.sh
