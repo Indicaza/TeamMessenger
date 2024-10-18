@@ -5,20 +5,17 @@ orbs:
 
 jobs:
   build-node:
-    working_directory: ~/project
+    working_directory: ~/TeamMessenger
     executor: node/default
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: npm
       - run:
           name: Ensure permissions for deploy.sh
           command: chmod +x ./deploy.sh
+      - node/install-packages:
+          pkg-manager: npm
       - run:
           command: npm run build
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
       - run:
           name: Check directory and list files
           command: pwd && ls -al
@@ -30,10 +27,11 @@ jobs:
           destination: chrome-extension-build
 
   deploy:
-    working_directory: ~/project
+    working_directory: ~/TeamMessenger
     docker:
       - image: cimg/base:stable
     steps:
+      - checkout
       - run:
           name: Ensure permissions for deploy.sh
           command: chmod +x ./deploy.sh
