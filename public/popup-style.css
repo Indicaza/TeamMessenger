@@ -1,0 +1,29 @@
+/* Ensure the extension takes up the full window space */
+html,
+body,
+#root {
+  height: 800px;
+  width: 600px;
+  margin: 0;
+  padding: 0;
+}
+
+h-screen {
+  height: 100vh;
+}
+
+w-screen {
+  width: 100vw;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.relative {
+  position: relative;
+}

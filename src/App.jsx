@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import ChatWindow from "./components/ChatWindow/ChatWindow";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+  };
+
+  useEffect(() => {
+    // Mock auth check for now, if you're removing Auth0
+    setIsAuthenticated(true);
+  }, []);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserProfile(null);
+  };
+
+  if (!isAuthenticated) {
+    return <div>Redirecting to login...</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="h-screen w-screen flex">
+        <Sidebar onSelectChat={handleSelectChat} />
+        <div className="flex-1 flex flex-col">
+          <Navbar onLogout={handleLogout} userProfile={userProfile} />
+          <div className="flex justify-center items-center flex-1">
+            <ChatWindow selectedChat={selectedChat} />
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;

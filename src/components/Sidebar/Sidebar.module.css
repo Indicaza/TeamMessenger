@@ -1,0 +1,153 @@
+.sidebar {
+  position: fixed;
+  top: 80px;
+  left: -400px; /* Start off-screen */
+  width: 350px;
+  max-width: 90vw;
+  height: 88vh;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 15;
+  overflow-y: auto;
+  border-radius: 8px;
+  transition: left 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.5);
+  background: rgba(0, 0, 0, 0.5); /* Smoked glass effect */
+  backdrop-filter: blur(10px); /* Apply glassmorphism */
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 300px; /* Shrink width for tablets */
+    height: 85vh; /* Adjust height */
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 250px; /* Full width for mobile */
+    height: 80vh;
+    padding: 10px;
+  }
+}
+
+.sidebar.open {
+  left: 1px; /* Slide into view */
+}
+
+.sidebarTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.messageList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.messageItem {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.messageItem:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.scrollable {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Sidebar toggle button */
+.sidebarToggle {
+  position: fixed;
+  top: 100px; /* Adjust based on navbar */
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  color: white;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.sidebarToggle:hover {
+  background-color: #535bf2; /* Purple hover color */
+}
+
+.sidebar.open ~ .sidebarToggle {
+  display: none; /* Hide toggle button when sidebar is open */
+}
+
+/* Close button inside the sidebar */
+.closeButton {
+  width: 45px;
+  height: 45px;
+  padding: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 1.3s ease;
+}
+
+.closeButton:hover {
+  background-color: #535bf2; /* Purple hover color */
+}
+
+.arrow {
+  margin: 5px 2px;
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  white-space: nowrap;
+  transition: all 1.3s ease;
+}
+
+.sidebarToggle:hover .tooltip,
+.closeButton:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltipOpen {
+  top: 25px;
+  left: 55px;
+}
+
+.tooltipClose {
+  top: 45px;
+  left: 175px;
+}

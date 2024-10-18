@@ -2,12 +2,20 @@
   "manifest_version": 3,
   "name": "TeamMessenger",
   "version": "1.0.0",
-  "description": "Basic setup for TeamMessenger Chrome extension.",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "popup.html",
+    "default_icon": "assets/icons/favicon-32x32.png",
+    "default_popup_width": 800,
+    "default_popup_height": 600
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "identity"],
   "background": {
-    "service_worker": "src/background.js"
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "assets/icons/favicon-16x16.png",
+    "32": "assets/icons/favicon-32x32.png",
+    "48": "assets/icons/android-chrome-192x192.png",
+    "128": "assets/icons/android-chrome-512x512.png"
   }
 }
