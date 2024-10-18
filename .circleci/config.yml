@@ -20,7 +20,7 @@ jobs:
           command: pwd && ls -al
       - run:
           name: Create a zip of the build files
-          command: bash ./deploy.sh
+          command: bash ../deploy.sh
       - store_artifacts:
           path: build.zip
           destination: chrome-extension-build
