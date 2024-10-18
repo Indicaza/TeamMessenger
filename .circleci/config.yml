@@ -11,6 +11,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Build Project
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
@@ -21,7 +22,6 @@ jobs:
       - run:
           name: Create a zip of the build files
           command: bash ./deploy.sh # Adjust this to ensure it runs correctly
-      # Store the zipped file as an artifact
       - store_artifacts:
           path: build.zip
           destination: chrome-extension-build
@@ -31,8 +31,11 @@ jobs:
       - image: cimg/base:stable
     steps:
       - run:
+          name: Check directory and list files (for debugging)
+          command: pwd && ls -al # Ensure that deploy.sh is in the right location
+      - run:
           name: deploy
-          command: bash ./deploy.sh # Using bash to ensure it's run properly
+          command: bash ./deploy.sh # Ensure deploy.sh is executed properly
 
 workflows:
   version: 2
