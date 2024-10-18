@@ -1,5 +1,3 @@
-# This config was automatically generated from your source code.
-# Stacks detected for this pipeline: cicd:github-actions:.github/workflows, deps:node.
 version: 2.1
 
 orbs:
@@ -7,7 +5,6 @@ orbs:
 
 jobs:
   build-node:
-    # Build node project with CircleCI
     executor: node/default
     steps:
       - checkout
@@ -18,7 +15,6 @@ jobs:
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
       - run:
           name: Copy artifacts
           command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
@@ -27,11 +23,10 @@ jobs:
           destination: node-build
 
   deploy:
-    # Deployment job to run only on the prod branch
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with your deploy commands
+      - checkout
       - run:
           name: deploy
           command: "./deploy.sh" # Replace with actual deploy commands
@@ -46,4 +41,4 @@ workflows:
             - build-node
           filters:
             branches:
-              only: prod # Ensures deploy only runs on prod branch
+              only: main
