@@ -25,6 +25,12 @@
   animation: popIn 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
+.messageItem:hover {
+  box-shadow: inset 3px 3px 14px -1px rgba(0, 0, 0, 0.3),
+    inset -3px -3px 14px -1px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
   .messageItem {
     padding: 8px;
