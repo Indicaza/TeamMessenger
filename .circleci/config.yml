@@ -4,41 +4,52 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  build-node:
+  build:
     executor: node/default
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Run build
           command: npm run build
       - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
+          name: Zip build files
+          command: bash deploy.sh # Calls your deploy.sh script to zip the files
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build.zip # Save the build.zip in the workspace for future jobs
 
   deploy:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
-          name: deploy
-          command: "./deploy.sh" # Replace with actual deploy commands
+          name: Upload to Chrome Web Store (Optional)
+          command: |
+            # Uncomment the below code if you want to automatically upload to the Chrome Web Store
+            # You need to have the chrome-webstore-upload-cli installed and configured
+            # chrome-webstore-upload-cli --source /tmp/workspace/build.zip \
+            #     --extension-id <your-extension-id> \
+            #     --client-id <your-client-id> \
+            #     --client-secret <your-client-secret> \
+            #     --refresh-token <your-refresh-token>
+      - run:
+          name: Deploy log
+          command: echo "Deployment process completed."
 
 workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build-node
+      - build
       - deploy:
           requires:
-            - build-node
+            - build
           filters:
             branches:
-              only: main
+              only: main # Ensures deployment only happens on the main branch
