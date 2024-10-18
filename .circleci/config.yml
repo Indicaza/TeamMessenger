@@ -5,6 +5,7 @@ orbs:
 
 jobs:
   build-node:
+    working_directory: ~/project
     executor: node/default
     steps:
       - checkout
@@ -20,18 +21,19 @@ jobs:
           command: pwd && ls -al
       - run:
           name: Create a zip of the build files
-          command: bash ../deploy.sh
+          command: bash ./deploy.sh
       - store_artifacts:
           path: build.zip
           destination: chrome-extension-build
 
   deploy:
+    working_directory: ~/project
     docker:
       - image: cimg/base:stable
     steps:
       - run:
           name: deploy
-          command: bash ../deploy.sh
+          command: bash ./deploy.sh
 
 workflows:
   version: 2
