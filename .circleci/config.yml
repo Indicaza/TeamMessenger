@@ -16,19 +16,23 @@ jobs:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
       - run:
+          name: Check directory and list files (for debugging)
+          command: pwd && ls -al # Ensure that deploy.sh is in the right location
+      - run:
           name: Create a zip of the build files
-          command: bash ./deploy.sh
+          command: bash ./deploy.sh # Adjust this to ensure it runs correctly
       # Store the zipped file as an artifact
       - store_artifacts:
           path: build.zip
           destination: chrome-extension-build
+
   deploy:
     docker:
       - image: cimg/base:stable
     steps:
       - run:
           name: deploy
-          command: "./deploy.sh"
+          command: bash ./deploy.sh # Using bash to ensure it's run properly
 
 workflows:
   version: 2
