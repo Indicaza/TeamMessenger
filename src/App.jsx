@@ -8,14 +8,18 @@ function App() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
   };
 
+  const handleReset = () => {
+    setResetTrigger((prev) => prev + 1); // Increment the reset trigger
+  };
+
   useEffect(() => {
-    // Mock auth check for now, if you're removing Auth0
-    setIsAuthenticated(true);
+    setIsAuthenticated(true); // Mock auth check
   }, []);
 
   const handleLogout = () => {
@@ -30,9 +34,13 @@ function App() {
   return (
     <Router>
       <div className="h-screen w-screen flex">
-        <Sidebar onSelectChat={handleSelectChat} />
+        <Sidebar onSelectChat={handleSelectChat} resetTrigger={resetTrigger} />
         <div className="flex-1 flex flex-col">
-          <Navbar onLogout={handleLogout} userProfile={userProfile} />
+          <Navbar
+            onLogout={handleLogout}
+            userProfile={userProfile}
+            onReset={handleReset}
+          />
           <div className="flex justify-center items-center flex-1">
             <ChatWindow selectedChat={selectedChat} />
           </div>

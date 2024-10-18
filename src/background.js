@@ -1,24 +1,20 @@
-// background.js
+import { getStorageItem } from "./storageHelper";
 
-// Placeholder authentication function
-function authenticateUser(sendResponse) {
-  chrome.storage.local.set(
-    {
-      accessToken: "dummy_token",
-      userProfile: {
-        name: "John Doe",
-        picture: "/assets/icons/favicon-32x32.png",
-      },
-    },
-    () => {
-      sendResponse({ success: true });
+const checkUnreadMessages = async () => {
+  const messages = await getStorageItem("messages");
+  if (messages) {
+    const unreadCount = messages.filter((message) => !message.read).length;
+    if (unreadCount > 0) {
+      chrome.action.setBadgeText({ text: `${unreadCount}` });
+      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" }); // Red badge for unread messages
+    } else {
+      chrome.action.setBadgeText({ text: "" }); // Clear badge when all are read
     }
-  );
-}
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "authenticate") {
-    authenticateUser(sendResponse);
-    return true; // Indicates async response
   }
-});
+};
+
+// Trigger the check every 1 minute (60,000 ms)
+setInterval(checkUnreadMessages, 60000); // 1 minute = 60,000 ms
+
+// Run it immediately when the background script starts
+checkUnreadMessages();

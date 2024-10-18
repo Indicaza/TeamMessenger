@@ -1,18 +1,27 @@
-// src/components/Navbar/Navbar.jsx
-
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./Navbar.module.css";
-import Logo from "../../assets/SVG/Logo.svg"; // Adjusted import for Logo
+import Logo from "../../assets/SVG/Logo.svg";
+import { clearStorage } from "../../storageHelper.js";
 
-const Navbar = ({ onLogout, userProfile }) => {
+const Navbar = ({ onLogout, userProfile, onReset }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null); // Ref for the dropdown
+  const dropdownRef = useRef(null);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  // Close the dropdown when clicking outside of it
+  const handleClearStorage = () => {
+    clearStorage()
+      .then(() => {
+        alert("Local storage cleared!");
+        onReset(); // Trigger the reset in ChatList
+      })
+      .catch((error) => {
+        console.error("Error clearing local storage:", error);
+      });
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -26,20 +35,18 @@ const Navbar = ({ onLogout, userProfile }) => {
   }, []);
 
   if (!userProfile) {
-    userProfile = { name: "Test User", picture: "/path/to/default-avatar.png" }; // Mock user profile
+    userProfile = { name: "Test User", picture: "/path/to/default-avatar.png" };
   }
 
   return (
     <header className={styles.navbar}>
       <div className={styles.navbarContainer}>
         <div className={styles.navbarLeft}>
-          {/* Replacing the title with the Logo */}
           <img src={Logo} alt="TeamMessenger Logo" className={styles.logo} />
         </div>
 
         <div className={styles.navbarRight}>
           <div ref={dropdownRef} className={styles.userMenu}>
-            {/* User's avatar */}
             <img
               src={userProfile.picture}
               alt={userProfile.name}
@@ -50,6 +57,12 @@ const Navbar = ({ onLogout, userProfile }) => {
               <div className={styles.dropdownMenu}>
                 <ul>
                   <li className={styles.dropdownItem}>Settings</li>
+                  <li
+                    className={styles.dropdownItem}
+                    onClick={handleClearStorage}
+                  >
+                    Clear Storage
+                  </li>
                   <li className={styles.dropdownItem} onClick={onLogout}>
                     Logout
                   </li>

@@ -5,16 +5,15 @@ import chimeSound from "../../assets/sounds/clunk-notification-alert_D_major.wav
 import { getStorageItem, setStorageItem } from "../../storageHelper";
 
 // Memoized individual message item to avoid unnecessary re-renders
-const MessageItem = React.memo(({ msg, clickedMessages, handleClick }) => (
+const MessageItem = React.memo(({ msg, handleClick }) => (
   <li
     key={msg.id}
-    className={`${styles.messageItem} ${
-      clickedMessages.includes(msg.id) ? styles.clicked : ""
-    }`}
+    className={`${styles.messageItem} ${msg.read ? styles.read : ""}`}
     onClick={() => handleClick(msg)}
   >
     <div className={styles.profileContainer}>
-      {!clickedMessages.includes(msg.id) && (
+      {/* Show neon glow and status orb only if the message is unread */}
+      {!msg.read && (
         <>
           <div className={`${styles.neonGlow} ${styles[msg.priority]}`} />
           <div className={`${styles.statusOrb} ${styles[msg.priority]}`} />
@@ -45,9 +44,9 @@ const MessageItem = React.memo(({ msg, clickedMessages, handleClick }) => (
   </li>
 ));
 
-const ChatList = ({ onSelectChat }) => {
+const ChatList = ({ onSelectChat, resetTrigger }) => {
   const [messages, setMessages] = useState([]);
-  const [clickedMessages, setClickedMessages] = useState([]);
+  const [remainingMessages, setRemainingMessages] = useState([]);
   const [userInteracted, setUserInteracted] = useState(false);
 
   // Add event listener for user interaction
@@ -73,64 +72,66 @@ const ChatList = ({ onSelectChat }) => {
     }
   }, [userInteracted]);
 
-  // Load messages from storage on mount
+  // Reset the state when resetTrigger is incremented
   useEffect(() => {
-    getStorageItem("messages")
-      .then((storedMessages) => {
-        if (storedMessages) {
-          setMessages(storedMessages);
-        }
-      })
-      .catch((error) =>
-        console.error("Error getting messages from storage:", error)
-      );
-  }, []);
+    const resetMessages = async () => {
+      setMessages([]); // Clear displayed messages
+      const allMessages = messagesData.messages.map((msg) => ({
+        ...msg,
+        read: false, // Mark all as unread on reset
+      }));
+      setRemainingMessages(allMessages); // Reset message pool
 
-  // Save messages to storage whenever they change
+      // Save reset state to storage
+      await setStorageItem("messages", []);
+    };
+    resetMessages();
+  }, [resetTrigger]);
+
+  // Populate the chat slowly with new messages from JSON
+  useEffect(() => {
+    if (remainingMessages.length === 0) return;
+
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * remainingMessages.length);
+      const newMessage = remainingMessages[randomIndex];
+
+      setRemainingMessages((prev) =>
+        prev.filter((_, idx) => idx !== randomIndex)
+      );
+      setMessages((prevMessages) => {
+        if (newMessage.priority === "high") playChime();
+        return [...prevMessages, newMessage];
+      });
+    }, Math.random() * 2000 + 1000); // Interval between 1-3 seconds
+
+    return () => clearInterval(interval);
+  }, [remainingMessages, playChime]);
+
+  // Save the state of displayed messages in local storage
   useEffect(() => {
     setStorageItem("messages", messages).catch((error) =>
       console.error("Error saving messages to storage:", error)
     );
   }, [messages]);
 
-  // Simulate receiving messages over time
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (messages.length < messagesData.messages.length) {
-        const randomIndex = Math.floor(
-          Math.random() * messagesData.messages.length
-        );
-        const newMessage = messagesData.messages[randomIndex];
-
-        if (!messages.some((msg) => msg.id === newMessage.id)) {
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages, newMessage];
-
-            // Play chime if the new message is high priority
-            if (newMessage.priority === "high") {
-              playChime();
-            }
-
-            return updatedMessages;
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [messages, playChime]);
-
-  // Sort messages by priority (memoized for efficiency)
+  // Memoized sorting of messages (Unread first, then by priority)
   const sortedMessages = useMemo(() => {
     const priorityOrder = { high: 1, medium: 2, low: 3 };
-    return [...messages].sort(
-      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-    );
+    return [...messages].sort((a, b) => {
+      if (a.read === b.read) {
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return a.read ? 1 : -1; // Unread messages go to the top
+    });
   }, [messages]);
 
+  // Mark a message as read when selected
   const handleSelectMessage = useCallback(
     (msg) => {
-      setClickedMessages((prevClicked) => [...prevClicked, msg.id]);
+      setMessages((prevMessages) =>
+        prevMessages.map((m) => (m.id === msg.id ? { ...m, read: true } : m))
+      );
       onSelectChat(msg);
     },
     [onSelectChat]
@@ -139,12 +140,7 @@ const ChatList = ({ onSelectChat }) => {
   return (
     <ul className={styles.messageList}>
       {sortedMessages.map((msg) => (
-        <MessageItem
-          key={msg.id}
-          msg={msg}
-          clickedMessages={clickedMessages}
-          handleClick={handleSelectMessage}
-        />
+        <MessageItem key={msg.id} msg={msg} handleClick={handleSelectMessage} />
       ))}
     </ul>
   );

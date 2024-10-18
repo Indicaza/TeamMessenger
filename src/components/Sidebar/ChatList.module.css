@@ -180,8 +180,19 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.clicked {
-  /* border: 1px solid #0084ff; */
+/* .clicked {
+  border: 1px solid #0084ff;
   transform: scale(0.95);
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.7);
+} */
+
+.read {
+  opacity: 0.5;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Dims the background of read messages */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Less prominent border for read messages */
 }
