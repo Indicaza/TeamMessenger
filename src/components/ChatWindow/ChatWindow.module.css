@@ -93,10 +93,10 @@
   justify-content: center;
   align-items: center;
   /* margin: 0 40px; */
-  padding: 5px;
+  padding: 2px;
   background-color: #2c2c2c;
   border-radius: 50px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 4px 8px rgba(0, 0, 0, 0.75);
   position: fixed;
   bottom: 10px;
   left: 50%;
@@ -114,12 +114,13 @@
 .messageInput {
   flex: 1;
   padding: 10px;
+  padding-left: 20px;
   font-size: 16px;
   border: none;
   border-radius: 50px 0 0 50px;
   background-color: #3a3a3a;
   color: white;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.42);
 }
 
 .sendButton {
@@ -130,9 +131,9 @@
   border-radius: 0 50px 50px 0;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 2px 2px -1px rgba(0, 0, 0, 0.9);
 }
 
 .sendButton:hover {
-  background-color: #006bbf;
+  background-color: #00cbf9;
 }

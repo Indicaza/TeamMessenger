@@ -43,7 +43,7 @@ const Sidebar = ({ onSelectChat, resetTrigger }) => {
         ref={sidebarRef}
         className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}
       >
-        <div className={styles.sidebarTitle}>
+        <div className={styles.sidebarHeader}>
           <span>Messages</span>
           <button onClick={toggleSidebar} className={styles.closeButton}>
             <span className={styles.arrow}>←</span>

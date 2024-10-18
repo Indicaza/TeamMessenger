@@ -14,12 +14,17 @@ const Navbar = ({ onLogout, userProfile, onReset }) => {
   const handleClearStorage = () => {
     clearStorage()
       .then(() => {
-        alert("Local storage cleared!");
-        onReset(); // Trigger the reset in ChatList
+        onReset();
+        setIsOpen(false);
       })
       .catch((error) => {
         console.error("Error clearing local storage:", error);
       });
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -35,7 +40,10 @@ const Navbar = ({ onLogout, userProfile, onReset }) => {
   }, []);
 
   if (!userProfile) {
-    userProfile = { name: "Test User", picture: "/path/to/default-avatar.png" };
+    userProfile = {
+      name: "My name Jeff",
+      picture: "../../assets/icons/wiz.png",
+    };
   }
 
   return (
@@ -53,22 +61,22 @@ const Navbar = ({ onLogout, userProfile, onReset }) => {
               className={styles.userAvatar}
               onClick={handleToggle}
             />
-            {isOpen && (
-              <div className={styles.dropdownMenu}>
-                <ul>
-                  <li className={styles.dropdownItem}>Settings</li>
-                  <li
-                    className={styles.dropdownItem}
-                    onClick={handleClearStorage}
-                  >
-                    Clear Storage
-                  </li>
-                  <li className={styles.dropdownItem} onClick={onLogout}>
-                    Logout
-                  </li>
-                </ul>
-              </div>
-            )}
+            <div
+              className={`${styles.dropdownMenu} ${isOpen ? styles.open : ""}`}
+            >
+              <ul>
+                <li className={styles.dropdownItem}>Settings</li>
+                <li
+                  className={styles.dropdownItem}
+                  onClick={handleClearStorage}
+                >
+                  Clear Storage
+                </li>
+                <li className={styles.dropdownItem} onClick={handleLogout}>
+                  Logout
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
