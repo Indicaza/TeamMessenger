@@ -1,20 +1,19 @@
-import { getStorageItem } from "./storageHelper";
-
-const checkUnreadMessages = async () => {
-  const messages = await getStorageItem("messages");
-  if (messages) {
-    const unreadCount = messages.filter((message) => !message.read).length;
-    if (unreadCount > 0) {
-      chrome.action.setBadgeText({ text: `${unreadCount}` });
-      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" }); // Red badge for unread messages
-    } else {
-      chrome.action.setBadgeText({ text: "" }); // Clear badge when all are read
+// background.js
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action === "ensureOffscreen") {
+    const offscreenUrl = chrome.runtime.getURL("offscreen.html");
+    const existingClients = await clients.matchAll();
+    if (existingClients.some((client) => client.url === offscreenUrl)) {
+      console.log("Offscreen document already exists");
+      sendResponse({ success: true });
+      return;
     }
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: ["AUDIO_PLAYBACK"],
+      justification: "Play alert sounds for high-priority messages",
+    });
+    console.log("Offscreen document created");
+    sendResponse({ success: true });
   }
-};
-
-// Trigger the check every 1 minute (60,000 ms)
-setInterval(checkUnreadMessages, 60000); // 1 minute = 60,000 ms
-
-// Run it immediately when the background script starts
-checkUnreadMessages();
+});

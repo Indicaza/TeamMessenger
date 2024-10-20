@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -8,43 +9,62 @@ export default defineConfig({
     react(),
     viteStaticCopy({
       targets: [
-        { src: "src/assets/icons/*", dest: "assets/icons" }, // Copy icons from src to dist
+        { src: "src/assets/icons/*", dest: "assets/icons" },
+        { src: "src/assets/sounds/*", dest: "assets/sounds" },
         { src: "public/manifest.json", dest: "" },
         { src: "public/popup.html", dest: "" },
         { src: "public/popup-style.css", dest: "" },
-        { src: "src/background.js", dest: "" }, // Copy background script from src
+        { src: "public/offscreen.html", dest: "" },
+        { src: "src/background.js", dest: "" },
+        { src: "src/offscreen.js", dest: "" },
+        { src: "src/assets/messages.json", dest: "assets" },
       ],
     }),
   ],
+  define: {
+    "process.env": {},
+    global: "window",
+    chrome: "chrome",
+    "globalThis.chrome": "chrome",
+  },
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "./src/main.jsx"), // Change back to main.jsx
-        popup: resolve(__dirname, "./public/popup.html"), // Popup HTML for Chrome extension
+        main: resolve(__dirname, "./src/main.jsx"),
+        popup: resolve(__dirname, "./public/popup.html"),
+        offscreen: resolve(__dirname, "./src/offscreen.js"),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === "main") {
-            return "src/[name].js"; // Output main.js into dist/src/
+          if (chunkInfo.name === "main" || chunkInfo.name === "offscreen") {
+            return "src/[name].js";
           }
-          return "[name].js"; // Default for other files
+          return "[name].js";
         },
         chunkFileNames: "[name].js",
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name.includes("assets/icons")) {
-            return "assets/icons/[name][extname]"; // Copy assets/icons to dist/assets/icons
+          if (assetInfo.name.includes("assets/")) {
+            return "assets/[name][extname]";
           }
-          return "[name][extname]"; // Default for other files
+          return "[name][extname]";
         },
       },
+      external: ["chrome"],
     },
     outDir: "dist",
+    minify: false,
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+  },
+  esbuild: {
+    keepNames: true,
   },
   server: {
     port: 5173,
     open: true,
     fs: {
-      allow: ["src", "public"], // Serve from src and public folders during dev
+      allow: ["src", "public"],
     },
   },
 });

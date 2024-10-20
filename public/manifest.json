@@ -8,7 +8,7 @@
     "default_popup_width": 800,
     "default_popup_height": 600
   },
-  "permissions": ["storage", "identity"],
+  "permissions": ["storage", "offscreen", "notifications", "action"],
   "background": {
     "service_worker": "background.js"
   },
@@ -17,5 +17,15 @@
     "32": "assets/icons/favicon-32x32.png",
     "48": "assets/icons/android-chrome-192x192.png",
     "128": "assets/icons/android-chrome-512x512.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "offscreen.html",
+        "offscreen.js",
+        "assets/sounds/clunk-notification-alert_D_major.wav"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

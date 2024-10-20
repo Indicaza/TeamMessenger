@@ -1,4 +1,5 @@
-import React, { useMemo, useCallback } from "react";
+// ChatList.jsx
+import React, { useMemo, useCallback, useEffect, useRef } from "react";
 import styles from "./ChatList.module.css";
 import { useMessages } from "./useMessages";
 
@@ -42,6 +43,7 @@ const MessageItem = React.memo(({ message, onMessageClick }) => (
 // Main ChatList component
 const ChatList = ({ onSelectChat, resetTrigger }) => {
   const { messages, setMessages } = useMessages(resetTrigger);
+  const prevMessagesRef = useRef([]);
 
   // Sort messages, unread at the top, then by priority
   const sortedMessages = useMemo(() => {
@@ -57,6 +59,7 @@ const ChatList = ({ onSelectChat, resetTrigger }) => {
   // Handle message click
   const handleSelectMessage = useCallback(
     (message) => {
+      console.log("Message clicked:", message);
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === message.id ? { ...msg, read: true } : msg
@@ -66,6 +69,55 @@ const ChatList = ({ onSelectChat, resetTrigger }) => {
     },
     [setMessages, onSelectChat]
   );
+
+  // Effect to update badge and play sound when new high-priority unread messages are added
+  useEffect(() => {
+    const prevMessages = prevMessagesRef.current;
+    const newHighPriorityMessages = messages.filter(
+      (msg) =>
+        !msg.read &&
+        msg.priority === "high" &&
+        !prevMessages.some((prevMsg) => prevMsg.id === msg.id)
+    );
+
+    if (newHighPriorityMessages.length > 0) {
+      // Update badge
+      const unreadCount = messages.filter(
+        (msg) => !msg.read && msg.priority === "high"
+      ).length;
+
+      if (globalThis.chrome && globalThis.chrome.action) {
+        globalThis.chrome.action.setBadgeText({ text: `${unreadCount}` });
+        globalThis.chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
+        console.log(`Badge updated to ${unreadCount}`);
+      }
+
+      // Play sound
+      if (globalThis.chrome && globalThis.chrome.runtime) {
+        // Ensure offscreen document exists
+        if (globalThis.chrome.runtime.sendMessage) {
+          globalThis.chrome.runtime.sendMessage({ action: "ensureOffscreen" });
+          // Send message to play sound
+          globalThis.chrome.runtime.sendMessage({ action: "playSound" });
+        }
+      }
+    } else {
+      // Check if no unread high-priority messages
+      const unreadHighPriorityMessages = messages.filter(
+        (msg) => !msg.read && msg.priority === "high"
+      );
+      if (unreadHighPriorityMessages.length === 0) {
+        // Clear badge
+        if (globalThis.chrome && globalThis.chrome.action) {
+          globalThis.chrome.action.setBadgeText({ text: "" });
+          console.log("Badge cleared");
+        }
+      }
+    }
+
+    // Update previous messages ref
+    prevMessagesRef.current = messages;
+  }, [messages]);
 
   return (
     <ul className={styles.messageList}>
