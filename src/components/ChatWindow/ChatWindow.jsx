@@ -1,5 +1,3 @@
-// src/components/ChatWindow/ChatWindow.jsx
-
 import React, {
   useState,
   useEffect,
@@ -11,7 +9,6 @@ import styles from "./ChatWindow.module.css";
 import { getAIResponse } from "../../api";
 import { getStorageItem, setStorageItem } from "../../storageHelper";
 
-// Memoized Message component to prevent unnecessary re-renders
 const Message = React.memo(({ content, type }) => (
   <div
     className={`${styles.message} ${
@@ -27,7 +24,6 @@ const ChatWindow = ({ selectedChat }) => {
   const [inputValue, setInputValue] = useState("");
   const messageEndRef = useRef(null);
 
-  // Load chat history when selectedChat changes
   useEffect(() => {
     if (selectedChat) {
       getStorageItem(`chat_${selectedChat.id}`)
@@ -55,7 +51,6 @@ const ChatWindow = ({ selectedChat }) => {
     }
   }, [selectedChat]);
 
-  // Save chat history to localStorage when messages change
   useEffect(() => {
     if (selectedChat) {
       setStorageItem(`chat_${selectedChat.id}`, messages).catch((error) => {
@@ -64,7 +59,6 @@ const ChatWindow = ({ selectedChat }) => {
     }
   }, [messages, selectedChat]);
 
-  // Scroll to the bottom when new messages are added
   const scrollToBottom = useCallback(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -86,7 +80,6 @@ const ChatWindow = ({ selectedChat }) => {
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       setInputValue("");
 
-      // Call GPT API
       try {
         const aiResponse = await getAIResponse(inputValue, selectedChat, [
           ...messages,
@@ -109,7 +102,6 @@ const ChatWindow = ({ selectedChat }) => {
     [inputValue, handleSendMessage]
   );
 
-  // Memoize the messages array to avoid unnecessary re-renders
   const memoizedMessages = useMemo(
     () =>
       messages.map((msg, index) => (

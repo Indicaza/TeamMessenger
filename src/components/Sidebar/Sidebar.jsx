@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./Sidebar.module.css";
 import ChatList from "./ChatList";
 
-const Sidebar = ({ onSelectChat }) => {
+const Sidebar = ({ onSelectChat, resetTrigger }) => {
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
 
@@ -10,7 +10,6 @@ const Sidebar = ({ onSelectChat }) => {
     setIsOpen(!isOpen);
   };
 
-  // Close the sidebar if user clicks outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -18,14 +17,12 @@ const Sidebar = ({ onSelectChat }) => {
       }
     };
 
-    // Add event listener for clicks
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Cleanup event listener on unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -46,7 +43,7 @@ const Sidebar = ({ onSelectChat }) => {
         ref={sidebarRef}
         className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}
       >
-        <div className={styles.sidebarTitle}>
+        <div className={styles.sidebarHeader}>
           <span>Messages</span>
           <button onClick={toggleSidebar} className={styles.closeButton}>
             <span className={styles.arrow}>←</span>
@@ -55,7 +52,7 @@ const Sidebar = ({ onSelectChat }) => {
             </span>
           </button>
         </div>
-        <ChatList onSelectChat={onSelectChat} />
+        <ChatList onSelectChat={onSelectChat} resetTrigger={resetTrigger} />
       </div>
     </>
   );

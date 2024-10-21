@@ -1,41 +1,36 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+// ChatList.jsx
+import React, { useMemo, useCallback, useEffect, useRef } from "react";
 import styles from "./ChatList.module.css";
-import messagesData from "../../assets/messages.json";
-import chimeSound from "../../assets/sounds/clunk-notification-alert_D_major.wav";
-import { getStorageItem, setStorageItem } from "../../storageHelper";
+import { useMessages } from "./useMessages";
 
-// Memoized individual message item to avoid unnecessary re-renders
-const MessageItem = React.memo(({ msg, clickedMessages, handleClick }) => (
+// Individual message component
+const MessageItem = React.memo(({ message, onMessageClick }) => (
   <li
-    key={msg.id}
-    className={`${styles.messageItem} ${
-      clickedMessages.includes(msg.id) ? styles.clicked : ""
-    }`}
-    onClick={() => handleClick(msg)}
+    key={message.id}
+    className={`${styles.messageItem} ${message.read ? styles.read : ""}`}
+    onClick={() => onMessageClick(message)}
   >
     <div className={styles.profileContainer}>
-      {!clickedMessages.includes(msg.id) && (
+      {!message.read && (
         <>
-          <div className={`${styles.neonGlow} ${styles[msg.priority]}`} />
-          <div className={`${styles.statusOrb} ${styles[msg.priority]}`} />
+          <div className={`${styles.neonGlow} ${styles[message.priority]}`} />
+          <div className={`${styles.statusOrb} ${styles[message.priority]}`} />
         </>
       )}
       <img
-        src={`https://picsum.photos/seed/${msg.id}/50`}
-        alt={msg.name}
+        src={`https://picsum.photos/seed/${message.id}/50`}
+        alt={message.name}
         className={styles.profilePic}
       />
     </div>
     <div className={styles.messageContent}>
       <div className={styles.messageHeader}>
-        <strong>
-          {msg.name} - {msg.role}
-        </strong>
+        <strong>{`${message.name} - ${message.role}`}</strong>
       </div>
       <div className={styles.messageDetails}>
-        <span>{msg.title}</span>
+        <span>{message.title}</span>
         <span className={styles.date}>
-          {new Date(msg.timestamp).toLocaleDateString("en-US", {
+          {new Date(message.timestamp).toLocaleDateString("en-US", {
             month: "2-digit",
             day: "2-digit",
           })}
@@ -45,105 +40,91 @@ const MessageItem = React.memo(({ msg, clickedMessages, handleClick }) => (
   </li>
 ));
 
-const ChatList = ({ onSelectChat }) => {
-  const [messages, setMessages] = useState([]);
-  const [clickedMessages, setClickedMessages] = useState([]);
-  const [userInteracted, setUserInteracted] = useState(false);
+// Main ChatList component
+const ChatList = ({ onSelectChat, resetTrigger }) => {
+  const { messages, setMessages } = useMessages(resetTrigger);
+  const prevMessagesRef = useRef([]);
 
-  // Add event listener for user interaction
-  useEffect(() => {
-    const handleUserInteraction = () => {
-      setUserInteracted(true);
-      window.removeEventListener("click", handleUserInteraction);
-    };
-    window.addEventListener("click", handleUserInteraction);
-
-    return () => {
-      window.removeEventListener("click", handleUserInteraction);
-    };
-  }, []);
-
-  const playChime = useCallback(() => {
-    if (userInteracted) {
-      const audio = new Audio(chimeSound);
-      audio.volume = 0.045;
-      audio
-        .play()
-        .catch((error) => console.error("Error playing audio:", error));
-    }
-  }, [userInteracted]);
-
-  // Load messages from storage on mount
-  useEffect(() => {
-    getStorageItem("messages")
-      .then((storedMessages) => {
-        if (storedMessages) {
-          setMessages(storedMessages);
-        }
-      })
-      .catch((error) =>
-        console.error("Error getting messages from storage:", error)
-      );
-  }, []);
-
-  // Save messages to storage whenever they change
-  useEffect(() => {
-    setStorageItem("messages", messages).catch((error) =>
-      console.error("Error saving messages to storage:", error)
-    );
-  }, [messages]);
-
-  // Simulate receiving messages over time
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (messages.length < messagesData.messages.length) {
-        const randomIndex = Math.floor(
-          Math.random() * messagesData.messages.length
-        );
-        const newMessage = messagesData.messages[randomIndex];
-
-        if (!messages.some((msg) => msg.id === newMessage.id)) {
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages, newMessage];
-
-            // Play chime if the new message is high priority
-            if (newMessage.priority === "high") {
-              playChime();
-            }
-
-            return updatedMessages;
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [messages, playChime]);
-
-  // Sort messages by priority (memoized for efficiency)
+  // Sort messages, unread at the top, then by priority
   const sortedMessages = useMemo(() => {
     const priorityOrder = { high: 1, medium: 2, low: 3 };
-    return [...messages].sort(
-      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-    );
+    return [...messages].sort((a, b) => {
+      if (a.read === b.read) {
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return a.read ? 1 : -1;
+    });
   }, [messages]);
 
+  // Handle message click
   const handleSelectMessage = useCallback(
-    (msg) => {
-      setClickedMessages((prevClicked) => [...prevClicked, msg.id]);
-      onSelectChat(msg);
+    (message) => {
+      console.log("Message clicked:", message);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === message.id ? { ...msg, read: true } : msg
+        )
+      );
+      onSelectChat(message);
     },
-    [onSelectChat]
+    [setMessages, onSelectChat]
   );
+
+  // Update badge and play sound when new high-priority messages are added
+  useEffect(() => {
+    const prevMessages = prevMessagesRef.current;
+    const newHighPriorityMessages = messages.filter(
+      (msg) =>
+        !msg.read &&
+        msg.priority === "high" &&
+        !prevMessages.some((prevMsg) => prevMsg.id === msg.id)
+    );
+
+    if (newHighPriorityMessages.length > 0) {
+      // Update badge
+      const unreadCount = messages.filter(
+        (msg) => !msg.read && msg.priority === "high"
+      ).length;
+
+      if (globalThis.chrome && globalThis.chrome.action) {
+        globalThis.chrome.action.setBadgeText({ text: `${unreadCount}` });
+        globalThis.chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
+        console.log(`Badge updated to ${unreadCount}`);
+      }
+
+      // Play sound
+      if (globalThis.chrome && globalThis.chrome.runtime) {
+        // Ensure offscreen document exists
+        if (globalThis.chrome.runtime.sendMessage) {
+          globalThis.chrome.runtime.sendMessage({ action: "ensureOffscreen" });
+          // Send message to play sound
+          globalThis.chrome.runtime.sendMessage({ action: "playSound" });
+        }
+      }
+    } else {
+      // Check if no unread high-priority messages
+      const unreadHighPriorityMessages = messages.filter(
+        (msg) => !msg.read && msg.priority === "high"
+      );
+      if (unreadHighPriorityMessages.length === 0) {
+        // Clear badge
+        if (globalThis.chrome && globalThis.chrome.action) {
+          globalThis.chrome.action.setBadgeText({ text: "" });
+          console.log("Badge cleared");
+        }
+      }
+    }
+
+    prevMessagesRef.current = messages;
+  }, [messages]);
 
   return (
     <ul className={styles.messageList}>
-      {sortedMessages.map((msg) => (
+      {sortedMessages.map((message) => (
         <MessageItem
-          key={msg.id}
-          msg={msg}
-          clickedMessages={clickedMessages}
-          handleClick={handleSelectMessage}
+          key={message.id}
+          message={message}
+          onMessageClick={handleSelectMessage}
         />
       ))}
     </ul>

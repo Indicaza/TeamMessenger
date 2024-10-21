@@ -1,44 +1,71 @@
 .sidebar {
   position: fixed;
   top: 80px;
-  left: -400px; /* Start off-screen */
+  left: -400px;
   width: 350px;
   max-width: 90vw;
-  height: 88vh;
+  height: 100%;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  /* border: 2px solid rgba(255, 255, 255, 0.2); */
   display: flex;
   flex-direction: column;
   z-index: 15;
   overflow-y: auto;
   border-radius: 8px;
   transition: left 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.5);
-  background: rgba(0, 0, 0, 0.5); /* Smoked glass effect */
-  backdrop-filter: blur(10px); /* Apply glassmorphism */
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+}
+
+/* Minimal scrollbar styling for the sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 8px; /* Narrow scrollbar */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Light scrollbar thumb */
+  border-radius: 10px; /* Rounded edges */
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4); /* More visible on hover */
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+.sidebar {
+  scrollbar-width: thin; /* Firefox scrollbar */
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.sidebar:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent; /* More visible scrollbar on hover */
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 300px; /* Shrink width for tablets */
-    height: 85vh; /* Adjust height */
+    width: 300px;
+    height: 85vh;
     padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .sidebar {
-    width: 250px; /* Full width for mobile */
+    width: 250px;
     height: 80vh;
     padding: 10px;
   }
 }
 
 .sidebar.open {
-  left: 1px; /* Slide into view */
+  left: 1px;
 }
 
-.sidebarTitle {
+.sidebarHeader {
   font-size: 24px;
   font-weight: bold;
   color: white;
@@ -73,10 +100,9 @@
   flex-grow: 1;
 }
 
-/* Sidebar toggle button */
 .sidebarToggle {
   position: fixed;
-  top: 100px; /* Adjust based on navbar */
+  top: 100px;
   left: 10px;
   width: 50px;
   height: 50px;
@@ -92,14 +118,14 @@
 }
 
 .sidebarToggle:hover {
-  background-color: #535bf2; /* Purple hover color */
+  background-color: #535bf2;
 }
 
 .sidebar.open ~ .sidebarToggle {
-  display: none; /* Hide toggle button when sidebar is open */
+  display: none;
 }
 
-/* Close button inside the sidebar */
+/* Styling for the close button to match the sidebar */
 .closeButton {
   width: 45px;
   height: 45px;
@@ -110,22 +136,36 @@
   align-items: center;
   justify-content: center;
   color: white;
+  background-color: rgba(0, 0, 0, 0.8); /* Make the circle dark */
   transition: all 1.3s ease;
 }
 
 .closeButton:hover {
-  background-color: #535bf2; /* Purple hover color */
+  background-color: rgba(83, 91, 242, 0.8); /* Slightly visible on hover */
+}
+
+/* Optional: Adjust the sidebar toggle to also blend with the theme */
+.sidebarToggle {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.8
+  ); /* Ensure the background matches the dark theme */
+}
+
+.sidebarToggle:hover {
+  background-color: rgba(83, 91, 242, 0.8);
 }
 
 .arrow {
   margin: 5px 2px;
 }
 
-/* Tooltip styles */
 .tooltip {
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark background to match sidebar */
+  color: rgba(255, 255, 255, 0.9); /* Slightly dimmer white for contrast */
   padding: 5px 10px;
   border-radius: 4px;
   font-size: 12px;
@@ -133,7 +173,6 @@
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
   white-space: nowrap;
-  transition: all 1.3s ease;
 }
 
 .sidebarToggle:hover .tooltip,
@@ -150,4 +189,33 @@
 .tooltipClose {
   top: 45px;
   left: 175px;
+}
+
+/* Dont look at this witchcraft */
+/* Minimal scrollbar styling */
+.sidebar.scrollable::-webkit-scrollbar {
+  width: 8px; /* Make the scrollbar narrow */
+}
+
+.sidebar.scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Light, subtle scrollbar thumb */
+  border-radius: 10px; /* Rounded scrollbar edges */
+}
+
+.sidebar.scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4); /* Slightly more visible on hover */
+}
+
+.sidebar.scrollable::-webkit-scrollbar-track {
+  background: transparent; /* Make the scrollbar track transparent */
+}
+
+/* Minimal scrollbar for other browsers */
+.scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.scrollable:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
 }

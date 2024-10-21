@@ -1,19 +1,30 @@
 import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 
-// Path to the popup.html in the dist folder
 const popupPath = resolve("dist/popup.html");
+const offscreenPath = resolve("dist/offscreen.html");
 
-// Read the popup.html file
-try {
-  const data = await readFile(popupPath, "utf-8");
+const fixPopupHtml = async () => {
+  try {
+    const data = await readFile(popupPath, "utf-8");
+    const updatedHtml = data.replace("../src/main.jsx", "./src/main.js");
+    await writeFile(popupPath, updatedHtml, "utf-8");
+    console.log("Successfully updated paths in popup.html");
+  } catch (err) {
+    console.error("Error processing popup.html:", err);
+  }
+};
 
-  // Replace main.jsx with main.js in the script tag
-  const updatedHtml = data.replace("../src/main.jsx", "./src/main.js");
+const fixOffscreenHtml = async () => {
+  try {
+    const data = await readFile(offscreenPath, "utf-8");
+    const updatedHtml = data.replace("offscreen.js", "./src/offscreen.js");
+    await writeFile(offscreenPath, updatedHtml, "utf-8");
+    console.log("Successfully updated paths in offscreen.html");
+  } catch (err) {
+    console.error("Error processing offscreen.html:", err);
+  }
+};
 
-  // Write the updated popup.html file back
-  await writeFile(popupPath, updatedHtml, "utf-8");
-  console.log("Successfully updated paths in popup.html");
-} catch (err) {
-  console.error("Error processing popup.html:", err);
-}
+fixPopupHtml();
+fixOffscreenHtml();

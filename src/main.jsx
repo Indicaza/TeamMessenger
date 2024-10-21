@@ -1,11 +1,37 @@
+// main.jsx
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./App";
-// import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+function renderApp() {
+  const container = document.getElementById("root");
+  const root = createRoot(container);
+  root.render(<App />);
+}
+
+if (
+  typeof globalThis !== "undefined" &&
+  globalThis.chrome &&
+  globalThis.chrome.storage
+) {
+  // Running in extension environment
+  console.log("Chrome APIs are available");
+  renderApp();
+} else {
+  // Wait for the DOM to load
+  window.addEventListener("DOMContentLoaded", () => {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.chrome &&
+      globalThis.chrome.storage
+    ) {
+      console.log("Chrome APIs are available after DOMContentLoaded");
+      renderApp();
+    } else {
+      console.error(
+        "Chrome APIs not available. This extension may not function properly."
+      );
+      renderApp();
+    }
+  });
+}
