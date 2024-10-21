@@ -4,19 +4,53 @@ orbs:
   node: circleci/node@5
 
 jobs:
+  install-dependencies:
+    working_directory: ~/TeamMessenger
+    executor: node/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+            - dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - node/install-packages:
+          pkg-manager: npm
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+            - node_modules
+
+  test-node:
+    working_directory: ~/TeamMessenger
+    executor: node/default
+    parallelism: 2
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Split tests based on timing
+          command: |
+            mkdir -p test-results
+            circleci tests glob "tests/**/*.test.js" | circleci tests split --split-by=timings > test-results/tests-to-run.txt
+      - run:
+          name: Run tests
+          command: |
+            npm run test -- --testPathPattern $(cat test-results/tests-to-run.txt)
+      - store_test_results:
+          path: test-results
+
   build-node:
     working_directory: ~/TeamMessenger
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Ensure permissions for deploy.sh
-          command: chmod +x ./deploy.sh
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Run tests
-          command: npm run test
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+            - dependency-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
           name: Build project
           command: npm run build
@@ -37,7 +71,13 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build-node
+      - install-dependencies
+      - test-node:
+          requires:
+            - install-dependencies
+      - build-node:
+          requires:
+            - test-node
       - deploy:
           requires:
             - build-node

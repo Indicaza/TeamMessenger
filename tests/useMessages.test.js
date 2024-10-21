@@ -15,7 +15,7 @@ describe("useMessages Hook", () => {
     const { result } = renderHook(() => useMessages(null));
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for state updates
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(result.current.messages.length).toBeGreaterThan(0);

@@ -1,4 +1,3 @@
-// storageHelper.js
 export const getStorageItem = (key) => {
   return new Promise((resolve, reject) => {
     try {
@@ -25,7 +24,6 @@ export const getStorageItem = (key) => {
           }
         });
       } else if (typeof window !== "undefined" && window.localStorage) {
-        // Fallback for development environment
         const data = localStorage.getItem(key);
         console.warn(
           `Using localStorage fallback for getStorageItem('${key}')`
@@ -68,7 +66,6 @@ export const setStorageItem = (key, value) => {
           }
         });
       } else if (typeof window !== "undefined" && window.localStorage) {
-        // Fallback for development environment
         localStorage.setItem(key, JSON.stringify(value));
         console.warn(
           `Using localStorage fallback for setStorageItem('${key}')`
@@ -108,7 +105,6 @@ export const clearStorage = () => {
           }
         });
       } else if (typeof window !== "undefined" && window.localStorage) {
-        // Fallback for development environment
         localStorage.clear();
         console.log("localStorage cleared");
         resolve();

@@ -1,4 +1,3 @@
-// main.jsx
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
@@ -14,11 +13,9 @@ if (
   globalThis.chrome &&
   globalThis.chrome.storage
 ) {
-  // Running in extension environment
   console.log("Chrome APIs are available");
   renderApp();
 } else {
-  // Wait for the DOM to load
   window.addEventListener("DOMContentLoaded", () => {
     if (
       typeof globalThis !== "undefined" &&
