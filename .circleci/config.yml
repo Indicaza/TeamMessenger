@@ -15,7 +15,14 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Run tests
+          command: npm run test
+      - run:
+          name: Build project
           command: npm run build
+      - run:
+          name: Compress build files (Brotli)
+          command: npm run compress
       - run:
           name: Check directory and list files
           command: pwd && ls -al
@@ -25,19 +32,6 @@ jobs:
       - store_artifacts:
           path: build.zip
           destination: chrome-extension-build
-
-  deploy:
-    working_directory: ~/TeamMessenger
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run:
-          name: Ensure permissions for deploy.sh
-          command: chmod +x ./deploy.sh
-      - run:
-          name: deploy
-          command: bash ./deploy.sh
 
 workflows:
   version: 2

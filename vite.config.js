@@ -1,8 +1,8 @@
-// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { resolve } from "path";
+import viteCompression from "vite-plugin-compression";
 
 export default defineConfig({
   plugins: [
@@ -19,6 +19,12 @@ export default defineConfig({
         { src: "src/offscreen.js", dest: "" },
         { src: "src/assets/messages.json", dest: "assets" },
       ],
+    }),
+    viteCompression({
+      algorithm: "brotliCompress", // You can switch this to 'gzip' if needed
+      ext: ".br", // File extension for Brotli
+      threshold: 1024, // Compress files larger than 1KB
+      deleteOriginFile: false, // Keep original files for backup
     }),
   ],
   define: {
