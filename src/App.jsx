@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
@@ -16,11 +15,11 @@ function App() {
   };
 
   const handleReset = () => {
-    setResetTrigger((prev) => prev + 1); // Increment the reset trigger
+    setResetTrigger((prev) => prev + 1);
   };
 
   useEffect(() => {
-    setIsAuthenticated(true); // Mock auth check
+    setIsAuthenticated(true);
   }, []);
 
   const handleLogout = () => {

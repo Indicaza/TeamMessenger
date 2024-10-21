@@ -8,9 +8,9 @@
   width: 100%;
   height: 80px;
   z-index: 20;
-  background: rgba(0, 0, 0, 0.5); /* Smoked glass effect */
+  background: rgba(0, 0, 0, 0.75); /* Smoked glass effect */
   backdrop-filter: blur(10px); /* Apply glassmorphism */
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(83, 83, 83, 0.75);
 }
 
 .navbarContainer {

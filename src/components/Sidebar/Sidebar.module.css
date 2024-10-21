@@ -14,7 +14,7 @@
   overflow-y: auto;
   border-radius: 8px;
   transition: left 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.5);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(10px);
 }
 

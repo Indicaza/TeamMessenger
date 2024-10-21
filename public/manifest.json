@@ -5,8 +5,8 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": "assets/icons/favicon-32x32.png",
-    "default_popup_width": 800,
-    "default_popup_height": 600
+    "default_popup_width": 500,
+    "default_popup_height": 500
   },
   "permissions": ["storage", "offscreen", "notifications", "action"],
   "background": {

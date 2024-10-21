@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Disallow specific files/folders (if needed)
+# Disallow: /private/
+# Disallow: /path/to/sensitive/data/
+
+# Allow specific bots only (optional, useful if you need to block some bots)
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://yourdomain.com/sitemap.xml

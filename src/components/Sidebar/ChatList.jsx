@@ -70,7 +70,7 @@ const ChatList = ({ onSelectChat, resetTrigger }) => {
     [setMessages, onSelectChat]
   );
 
-  // Effect to update badge and play sound when new high-priority unread messages are added
+  // Update badge and play sound when new high-priority messages are added
   useEffect(() => {
     const prevMessages = prevMessagesRef.current;
     const newHighPriorityMessages = messages.filter(
@@ -115,7 +115,6 @@ const ChatList = ({ onSelectChat, resetTrigger }) => {
       }
     }
 
-    // Update previous messages ref
     prevMessagesRef.current = messages;
   }, [messages]);
 
